@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman 🎉</title>
+  <style>
+    :root {
+      --bg: #fdf6ec;
+      --surface: #ffffff;
+      --accent: #ff6b35;
+      --accent2: #4ecdc4;
+      --accent3: #ffe66d;
+      --ink: #2d2d2d;
+      --muted: #888;
+      --correct: #2ecc71;
+      --wrong: #e74c3c;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background: var(--accent3);
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .game-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    /* Gallows */
+    .gallows-wrap {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #gallows-svg { width: 200px; height: 220px; }
+
+    /* Word display */
+    .word-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .letter-slot {
+      width: 40px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .letter-slot .revealed {
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .letter-slot .revealed.pop { animation: pop 0.3s ease; }
+
+    .letter-slot .underline {
+      width: 100%;
+      height: 3px;
+      background: var(--ink);
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.3); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Wrong letters */
+    .wrong-wrap { text-align: center; }
+
+    .wrong-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .wrong-letters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      min-height: 34px;
+    }
+
+    .wrong-chip {
+      background: #fde8e8;
+      color: var(--wrong);
+      font-size: 1rem;
+      font-weight: 800;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-4px) rotate(-5deg); }
+      75%      { transform: translateX(4px) rotate(5deg); }
+    }
+
+    /* Keyboard — event delegation, no per-button handlers */
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .key {
+      width: 44px;
+      height: 52px;
+      border-radius: 10px;
+      border: none;
+      background: var(--surface);
+      box-shadow: 0 3px 0 #d0c8b8, 0 1px 6px rgba(0,0,0,0.1);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ink);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.15s, color 0.15s, transform 0.1s, box-shadow 0.1s;
+      flex-shrink: 0;
+      /* Ensure click events fire */
+      pointer-events: auto;
+    }
+
+    .key:active { transform: translateY(2px); box-shadow: 0 1px 0 #d0c8b8; }
+
+    .key.correct {
+      background: var(--correct);
+      color: #fff;
+      box-shadow: 0 3px 0 #27ae60;
+      pointer-events: none;
+    }
+
+    .key.wrong {
+      background: #f0e8e8;
+      color: #ccc;
+      box-shadow: 0 3px 0 #e0d0d0;
+      pointer-events: none;
+    }
+
+    /* Result overlay */
+    .result-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .result-card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      max-width: 340px;
+      width: 90%;
+      animation: slideUp 0.35s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .result-emoji  { font-size: 4rem; margin-bottom: 12px; }
+    .result-title  { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+    .result-word   { font-size: 1rem; color: var(--muted); margin-bottom: 24px; }
+    .result-word strong { color: var(--ink); font-size: 1.2rem; }
+
+    .btn-play-again {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      padding: 14px 32px;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 4px 0 #c04d20;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn-play-again:active { transform: translateY(2px); box-shadow: 0 2px 0 #c04d20; }
+
+    /* Score bar */
+    .score-bar { display: flex; gap: 24px; font-size: 0.9rem; font-weight: 700; }
+    .score-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .score-num  { font-size: 1.5rem; font-weight: 900; }
+    .score-num.wins   { color: var(--correct); }
+    .score-num.losses { color: var(--wrong); }
+
+    /* Hint */
+    .hint-btn {
+      background: var(--accent2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 3px 0 #3aaba3;
+      transition: transform 0.1s;
+    }
+    .hint-btn:active { transform: translateY(2px); }
+    .hint-btn:disabled { opacity: 0.4; pointer-events: none; }
+
+    .hint-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      min-height: 20px;
+      text-align: center;
+      max-width: 360px;
+      padding: 0 8px;
+    }
+
+    @media (max-width: 420px) {
+      .key { width: 36px; height: 44px; font-size: 0.9rem; }
+      .key-row { gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎩 Hangman ✏️</h1>
+<div class="category-badge" id="category-badge">Loading…</div>
+
+<div class="game-area">
+
+  <div class="score-bar">
+    <div class="score-item">
+      <span class="score-num wins" id="wins">0</span>
+      <span>Wins 🏆</span>
+    </div>
+    <div class="score-item">
+      <span class="score-num losses" id="losses">0</span>
+      <span>Losses 💀</span>
+    </div>
+  </div>
+
+  <!-- Gallows SVG -->
+  <div class="gallows-wrap">
+    <svg id="gallows-svg" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="20"  y1="210" x2="180" y2="210" stroke="#2d2d2d" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60"  y1="210" x2="60"  y2="20"  stroke="#2d2d2d" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60"  y1="20"  x2="130" y2="20"  stroke="#2d2d2d" stroke-width="6" stroke-linecap="round"/>
+      <line x1="130" y1="20"  x2="130" y2="40"  stroke="#2d2d2d" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 4"/>
+      <circle id="h-head" cx="130" cy="58"  r="18"                        stroke="#ff6b35" stroke-width="4" opacity="0"/>
+      <line   id="h-body" x1="130" y1="76"  x2="130" y2="130"             stroke="#ff6b35" stroke-width="4" stroke-linecap="round" opacity="0"/>
+      <line   id="h-larm" x1="130" y1="90"  x2="105" y2="115"             stroke="#ff6b35" stroke-width="4" stroke-linecap="round" opacity="0"/>
+      <line   id="h-rarm" x1="130" y1="90"  x2="155" y2="115"             stroke="#ff6b35" stroke-width="4" stroke-linecap="round" opacity="0"/>
+      <line   id="h-lleg" x1="130" y1="130" x2="105" y2="160"             stroke="#ff6b35" stroke-width="4" stroke-linecap="round" opacity="0"/>
+      <line   id="h-rleg" x1="130" y1="130" x2="155" y2="160"             stroke="#ff6b35" stroke-width="4" stroke-linecap="round" opacity="0"/>
+      <g id="h-face" opacity="0">
+        <line x1="123" y1="52" x2="127" y2="56" stroke="#2d2d2d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="127" y1="52" x2="123" y2="56" stroke="#2d2d2d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="133" y1="52" x2="137" y2="56" stroke="#2d2d2d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="137" y1="52" x2="133" y2="56" stroke="#2d2d2d" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M124 65 Q130 61 136 65" stroke="#2d2d2d" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Hint -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:100%">
+    <button class="hint-btn" id="hint-btn">💡 Hint</button>
+    <div class="hint-text" id="hint-text"></div>
+  </div>
+
+  <!-- Word -->
+  <div class="word-row" id="word-row"></div>
+
+  <!-- Wrong letters -->
+  <div class="wrong-wrap">
+    <div class="wrong-label">Wrong guesses: <span id="wrong-count">0</span> / 7</div>
+    <div class="wrong-letters" id="wrong-letters"></div>
+  </div>
+
+  <!-- Keyboard -->
+  <div class="keyboard" id="keyboard"></div>
+
+</div>
+
+<!-- Result overlay -->
+<div class="result-overlay" id="result-overlay">
+  <div class="result-card">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <div class="result-title" id="result-title">You Win!</div>
+    <div class="result-word"  id="result-word"></div>
+    <button class="btn-play-again" id="play-again-btn">Play Again!</button>
+  </div>
+</div>
+
+<script>
+// ── Word bank ────────────────────────────────────────────────────────────────
+var WORDS = {
+  "Animals 🐾": [
+    { word: "ELEPHANT",  hint: "The biggest land animal — has a long trunk" },
+    { word: "GIRAFFE",   hint: "Has the longest neck of any animal" },
+    { word: "PENGUIN",   hint: "A bird that cannot fly but loves to swim" },
+    { word: "DOLPHIN",   hint: "A very smart ocean mammal" },
+    { word: "KANGAROO",  hint: "Carries babies in a pouch and hops around" },
+    { word: "CROCODILE", hint: "A big green reptile with sharp teeth" },
+    { word: "FLAMINGO",  hint: "A pink bird that stands on one leg" },
+    { word: "OCTOPUS",   hint: "Has eight arms and lives in the sea" },
+    { word: "PORCUPINE", hint: "Covered in sharp spiky quills" },
+    { word: "CHEETAH",   hint: "The fastest land animal on Earth" }
+  ],
+  "Fruits 🍎": [
+    { word: "STRAWBERRY",  hint: "Red, small, and goes great with cream" },
+    { word: "PINEAPPLE",   hint: "Spiky on the outside, sweet on the inside" },
+    { word: "WATERMELON",  hint: "Big and green outside, red and juicy inside" },
+    { word: "BLUEBERRY",   hint: "Tiny, round, and dark blue or purple" },
+    { word: "MANGO",       hint: "Tropical, orange inside, and super sweet" },
+    { word: "RASPBERRY",   hint: "Looks like a red bumpy berry" },
+    { word: "COCONUT",     hint: "Has white meat inside and coconut milk" },
+    { word: "POMEGRANATE", hint: "Full of tiny jewel-like red seeds inside" },
+    { word: "KIWI",        hint: "Small and brown outside, bright green inside" },
+    { word: "AVOCADO",     hint: "Green and creamy — great on toast!" }
+  ],
+  "Space 🚀": [
+    { word: "ASTEROID",  hint: "A rocky object floating in space" },
+    { word: "GALAXY",    hint: "A huge collection of billions of stars" },
+    { word: "TELESCOPE", hint: "You look through this to see stars up close" },
+    { word: "ASTRONAUT", hint: "A person who travels into space" },
+    { word: "COMET",     hint: "Has a bright tail and zooms past the sun" },
+    { word: "NEPTUNE",   hint: "The farthest planet from the sun" },
+    { word: "SATURN",    hint: "The planet famous for its beautiful rings" },
+    { word: "UNIVERSE",  hint: "Everything that exists — planets, stars, all!" },
+    { word: "SUPERNOVA", hint: "An enormous star explosion in space" },
+    { word: "BLACKHOLE", hint: "So heavy not even light can escape it" }
+  ],
+  "Food 🍕": [
+    { word: "SPAGHETTI", hint: "Long thin Italian pasta with sauce" },
+    { word: "CHOCOLATE", hint: "Sweet brown treat made from cacao beans" },
+    { word: "HAMBURGER", hint: "A meat patty in a round bun" },
+    { word: "PANCAKES",  hint: "Flat, fluffy, and great with maple syrup" },
+    { word: "BROCCOLI",  hint: "Looks like a tiny tree and is very healthy" },
+    { word: "POPCORN",   hint: "Corn that pops when it gets hot" },
+    { word: "SANDWICH",  hint: "Filling between two slices of bread" },
+    { word: "MILKSHAKE", hint: "A cold, creamy, blended drink" },
+    { word: "PRETZEL",   hint: "A twisted, salty, crunchy baked snack" },
+    { word: "WAFFLE",    hint: "A square-patterned breakfast treat" }
+  ],
+  "Sports ⚽": [
+    { word: "BASKETBALL", hint: "Dribble and shoot a ball into a hoop" },
+    { word: "VOLLEYBALL",  hint: "Hit the ball over the net without letting it drop" },
+    { word: "GYMNASTICS",  hint: "Flipping, tumbling, and balancing on beams" },
+    { word: "SWIMMING",    hint: "Racing through water with arms and legs" },
+    { word: "BADMINTON",   hint: "You hit a shuttlecock over a net" },
+    { word: "SKATEBOARD",  hint: "A board on wheels for tricks and riding" },
+    { word: "ARCHERY",     hint: "Shooting arrows at a target" },
+    { word: "CYCLING",     hint: "Racing or riding on two wheels" },
+    { word: "WRESTLING",   hint: "Two people try to pin each other down" },
+    { word: "FENCING",     hint: "Fighting with long thin swords — wear a mask!" }
+  ]
+};
+
+var BODY_PARTS = ['h-head','h-body','h-larm','h-rarm','h-lleg','h-rleg','h-face'];
+var ROWS = ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+
+var currentWord  = '';
+var currentHint  = '';
+var guessed      = {};   // plain object as a set — no Set() for max compatibility
+var wrongCount   = 0;
+var wins         = 0;
+var losses       = 0;
+var hintUsed     = false;
+var gameOver     = false;
+
+// ── Build keyboard once (not on every newGame) ───────────────────────────────
+function buildKeyboard() {
+  var kb = document.getElementById('keyboard');
+  kb.innerHTML = '';
+  for (var r = 0; r < ROWS.length; r++) {
+    var row = ROWS[r];
+    var div = document.createElement('div');
+    div.className = 'key-row';
+    for (var i = 0; i < row.length; i++) {
+      var ch = row[i];
+      var btn = document.createElement('button');
+      btn.className = 'key';
+      btn.id = 'key-' + ch;
+      btn.textContent = ch;
+      // Inline onclick baked directly onto the element — most reliable on all
+      // mobile browsers; no bubbling or delegation needed.
+      btn.setAttribute('onclick', "handleGuess('" + ch + "')");
+      div.appendChild(btn);
+    }
+    kb.appendChild(div);
+  }
+}
+
+// ── New game ─────────────────────────────────────────────────────────────────
+function newGame() {
+  var categories = Object.keys(WORDS);
+  var cat  = categories[Math.floor(Math.random() * categories.length)];
+  var list = WORDS[cat];
+  var entry = list[Math.floor(Math.random() * list.length)];
+
+  currentWord = entry.word;
+  currentHint = entry.hint;
+  guessed     = {};
+  wrongCount  = 0;
+  hintUsed    = false;
+  gameOver    = false;
+
+  document.getElementById('category-badge').textContent = cat;
+  document.getElementById('hint-text').textContent      = '';
+  document.getElementById('hint-btn').disabled          = false;
+  document.getElementById('wrong-count').textContent    = '0';
+  document.getElementById('wrong-letters').innerHTML    = '';
+  document.getElementById('result-overlay').classList.remove('show');
+
+  resetGallows();
+  renderWord();
+  resetKeyboard();
+}
+
+// ── Gallows ──────────────────────────────────────────────────────────────────
+function resetGallows() {
+  for (var i = 0; i < BODY_PARTS.length; i++) {
+    document.getElementById(BODY_PARTS[i]).setAttribute('opacity', '0');
+  }
+}
+
+function showBodyPart(index) {
+  if (index < BODY_PARTS.length) {
+    document.getElementById(BODY_PARTS[index]).setAttribute('opacity', '1');
+  }
+}
+
+// ── Word display ──────────────────────────────────────────────────────────────
+function renderWord() {
+  var row = document.getElementById('word-row');
+  row.innerHTML = '';
+  for (var i = 0; i < currentWord.length; i++) {
+    var ch = currentWord[i];
+    var slot = document.createElement('div');
+    slot.className = 'letter-slot';
+    var span = document.createElement('div');
+    span.className = 'revealed';
+    span.id = 'slot-' + i;
+    span.textContent = guessed[ch] ? ch : '';
+    var line = document.createElement('div');
+    line.className = 'underline';
+    slot.appendChild(span);
+    slot.appendChild(line);
+    row.appendChild(slot);
+  }
+}
+
+function revealLetter(ch) {
+  for (var i = 0; i < currentWord.length; i++) {
+    if (currentWord[i] === ch) {
+      var span = document.getElementById('slot-' + i);
+      if (span) {
+        span.textContent = ch;
+        span.classList.add('pop');
+        (function(s) {
+          setTimeout(function() { s.classList.remove('pop'); }, 400);
+        })(span);
+      }
+    }
+  }
+}
+
+// ── Keyboard state ─────────────────────────────────────────────────────────
+function resetKeyboard() {
+  var allLetters = 'QWERTYUIOPASDFGHJKLZXCVBNM';
+  for (var i = 0; i < allLetters.length; i++) {
+    var ch = allLetters[i];
+    var btn = document.getElementById('key-' + ch);
+    if (btn) {
+      btn.className = 'key';
+      btn.setAttribute('onclick', "handleGuess('" + ch + "')");
+    }
+  }
+}
+
+function markKey(ch, state) {  // state = 'correct' or 'wrong'
+  var btn = document.getElementById('key-' + ch);
+  if (btn) {
+    btn.className = 'key ' + state;
+    btn.setAttribute('onclick', '');  // neutralise — already guessed
+  }
+}
+
+// ── Core guess logic ───────────────────────────────────────────────────────
+function handleGuess(ch) {
+  if (gameOver || guessed[ch]) return;
+  guessed[ch] = true;
+
+  if (currentWord.indexOf(ch) !== -1) {
+    markKey(ch, 'correct');
+    revealLetter(ch);
+    checkWin();
+  } else {
+    markKey(ch, 'wrong');
+    wrongCount++;
+    document.getElementById('wrong-count').textContent = wrongCount;
+    showBodyPart(wrongCount - 1);
+    addWrongChip(ch);
+    if (wrongCount >= 7) endGame(false);
+  }
+}
+
+function addWrongChip(ch) {
+  var chip = document.createElement('div');
+  chip.className = 'wrong-chip';
+  chip.textContent = ch;
+  document.getElementById('wrong-letters').appendChild(chip);
+}
+
+function checkWin() {
+  for (var i = 0; i < currentWord.length; i++) {
+    if (!guessed[currentWord[i]]) return;  // still unsolved
+  }
+  endGame(true);
+}
+
+// ── End game ─────────────────────────────────────────────────────────────────
+function endGame(won) {
+  gameOver = true;
+  var emojis, title;
+  if (won) {
+    wins++;
+    document.getElementById('wins').textContent = wins;
+    emojis = ['🎉','🥳','🌟','🏆','✨'];
+    title  = 'You got it!';
+  } else {
+    losses++;
+    document.getElementById('losses').textContent = losses;
+    // Reveal full word
+    for (var i = 0; i < currentWord.length; i++) {
+      var span = document.getElementById('slot-' + i);
+      if (span) span.textContent = currentWord[i];
+    }
+    emojis = ['😅','😬','💀','🙈'];
+    title  = 'Better luck next time!';
+  }
+  document.getElementById('result-emoji').textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-word').innerHTML    = 'The word was <strong>' + currentWord + '</strong>';
+  document.getElementById('result-overlay').classList.add('show');
+}
+
+// ── Hint ──────────────────────────────────────────────────────────────────────
+document.getElementById('hint-btn').addEventListener('click', function() {
+  if (hintUsed || gameOver) return;
+  hintUsed = true;
+  document.getElementById('hint-text').textContent = '💡 ' + currentHint;
+  document.getElementById('hint-btn').disabled = true;
+});
+
+// ── Play again ────────────────────────────────────────────────────────────────
+document.getElementById('play-again-btn').addEventListener('click', function() {
+  newGame();
+});
+
+// ── Physical keyboard support ─────────────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  var ch = e.key.toUpperCase();
+  if (/^[A-Z]$/.test(ch)) handleGuess(ch);
+  if (e.key === 'Enter' && gameOver) newGame();
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+buildKeyboard();
+newGame();
+</script>
+</body>
+</html>
