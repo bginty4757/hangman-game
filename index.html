@@ -318,6 +318,7 @@
       <span>Losses 💀</span>
     </div>
   </div>
+  <div id="deck-progress" style="font-size:0.75rem;color:#aaa;margin-top:-12px;font-weight:600;letter-spacing:0.3px"></div>
 
   <!-- Gallows SVG -->
   <div class="gallows-wrap">
@@ -449,6 +450,33 @@ var losses       = 0;
 var hintUsed     = false;
 var gameOver     = false;
 
+// ── Shuffled deck — all words played before any repeats ──────────────────────
+var deck      = [];   // [{cat, word, hint}, ...] — remaining unplayed entries
+var deckTotal = 0;
+
+function buildDeck() {
+  deck = [];
+  var cats = Object.keys(WORDS);
+  for (var c = 0; c < cats.length; c++) {
+    var cat  = cats[c];
+    var list = WORDS[cat];
+    for (var i = 0; i < list.length; i++) {
+      deck.push({ cat: cat, word: list[i].word, hint: list[i].hint });
+    }
+  }
+  deckTotal = deck.length;
+  // Fisher-Yates shuffle
+  for (var j = deck.length - 1; j > 0; j--) {
+    var k = Math.floor(Math.random() * (j + 1));
+    var tmp = deck[j]; deck[j] = deck[k]; deck[k] = tmp;
+  }
+}
+
+function nextEntry() {
+  if (deck.length === 0) buildDeck();   // reshuffled once exhausted
+  return deck.pop();
+}
+
 // ── Build keyboard once (not on every newGame) ───────────────────────────────
 function buildKeyboard() {
   var kb = document.getElementById('keyboard');
@@ -474,10 +502,7 @@ function buildKeyboard() {
 
 // ── New game ─────────────────────────────────────────────────────────────────
 function newGame() {
-  var categories = Object.keys(WORDS);
-  var cat  = categories[Math.floor(Math.random() * categories.length)];
-  var list = WORDS[cat];
-  var entry = list[Math.floor(Math.random() * list.length)];
+  var entry = nextEntry();
 
   currentWord = entry.word;
   currentHint = entry.hint;
@@ -486,12 +511,15 @@ function newGame() {
   hintUsed    = false;
   gameOver    = false;
 
-  document.getElementById('category-badge').textContent = cat;
+  document.getElementById('category-badge').textContent = entry.cat;
   document.getElementById('hint-text').textContent      = '';
   document.getElementById('hint-btn').disabled          = false;
   document.getElementById('wrong-count').textContent    = '0';
   document.getElementById('wrong-letters').innerHTML    = '';
   document.getElementById('result-overlay').classList.remove('show');
+  // Show how many words remain in this round
+  var played = deckTotal - deck.length;
+  document.getElementById('deck-progress').textContent  = played + ' / ' + deckTotal + ' words played';
 
   resetGallows();
   renderWord();
@@ -647,6 +675,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
+buildDeck();
 buildKeyboard();
 newGame();
 </script>
