@@ -374,67 +374,144 @@
 </div>
 
 <script>
-// ── Word bank ────────────────────────────────────────────────────────────────
+// ── Word bank (865 words, 12 categories) ────────────────────────────────
 var WORDS = {
   "Animals 🐾": [
-    { word: "ELEPHANT",  hint: "The biggest land animal — has a long trunk" },
-    { word: "GIRAFFE",   hint: "Has the longest neck of any animal" },
-    { word: "PENGUIN",   hint: "A bird that cannot fly but loves to swim" },
-    { word: "DOLPHIN",   hint: "A very smart ocean mammal" },
-    { word: "KANGAROO",  hint: "Carries babies in a pouch and hops around" },
-    { word: "CROCODILE", hint: "A big green reptile with sharp teeth" },
-    { word: "FLAMINGO",  hint: "A pink bird that stands on one leg" },
-    { word: "OCTOPUS",   hint: "Has eight arms and lives in the sea" },
-    { word: "PORCUPINE", hint: "Covered in sharp spiky quills" },
-    { word: "CHEETAH",   hint: "The fastest land animal on Earth" }
+    "AARDVARK", "ALBATROSS", "ALLIGATOR", "ALPACA", "ANACONDA", "ANTELOPE", "ARMADILLO", "BABOON",
+    "BADGER", "BARRACUDA", "BAT", "BEAR", "BEAVER", "BISON", "BOAR", "BUFFALO",
+    "BULLFROG", "BUTTERFLY", "CAMEL", "CARIBOU", "CASSOWARY", "CATERPILLAR", "CHAMELEON", "CHEETAH",
+    "CHIMPANZEE", "CHIPMUNK", "COBRA", "COCKROACH", "CONDOR", "COUGAR", "COYOTE", "CRAB",
+    "CRANE", "CROCODILE", "CROW", "DEER", "DINGO", "DOLPHIN", "DONKEY", "DRAGONFLY",
+    "DUCK", "EAGLE", "EARTHWORM", "EEL", "ELEPHANT", "ELK", "EMU", "FALCON",
+    "FERRET", "FLAMINGO", "FOX", "FROG", "GAZELLE", "GECKO", "GIRAFFE", "GNU",
+    "GORILLA", "GRASSHOPPER", "GRIZZLY", "HAMSTER", "HAWK", "HEDGEHOG", "HIPPOPOTAMUS", "HORNET",
+    "HUMMINGBIRD", "HYENA", "IGUANA", "IMPALA", "JAGUAR", "JELLYFISH", "KANGAROO", "KINGFISHER",
+    "KOALA", "KOMODO", "LADYBUG", "LEMUR", "LEOPARD", "LION", "LIZARD", "LLAMA",
+    "LOBSTER", "LYNX", "MACAW", "MANATEE", "MEERKAT", "MONGOOSE", "MOOSE", "MOTH",
+    "NARWHAL", "OCELOT", "OCTOPUS", "ORANGUTAN", "OSTRICH", "OTTER", "OYSTER", "PANDA",
+    "PANTHER", "PARROT", "PEACOCK", "PELICAN", "PENGUIN", "PIRANHA", "PLATYPUS", "PORCUPINE",
+    "PORPOISE", "PYTHON", "RABBIT", "RACCOON", "RATTLESNAKE", "REINDEER", "RHINO", "ROADRUNNER",
+    "SALAMANDER", "SCORPION", "SEAHORSE", "SEAL", "SHARK", "SLOTH", "SNAIL", "SPARROW",
+    "SPIDER", "SQUID", "SQUIRREL", "STINGRAY", "STORK", "SWAN", "TAPIR", "TARANTULA",
+    "TIGER", "TOUCAN", "TURTLE", "VULTURE", "WALRUS", "WARTHOG", "WASP", "WEASEL",
+    "WHALE", "WOLF", "WOLVERINE", "WOMBAT", "WOODPECKER", "YAK", "ZEBRA"
   ],
-  "Fruits 🍎": [
-    { word: "STRAWBERRY",  hint: "Red, small, and goes great with cream" },
-    { word: "PINEAPPLE",   hint: "Spiky on the outside, sweet on the inside" },
-    { word: "WATERMELON",  hint: "Big and green outside, red and juicy inside" },
-    { word: "BLUEBERRY",   hint: "Tiny, round, and dark blue or purple" },
-    { word: "MANGO",       hint: "Tropical, orange inside, and super sweet" },
-    { word: "RASPBERRY",   hint: "Looks like a red bumpy berry" },
-    { word: "COCONUT",     hint: "Has white meat inside and coconut milk" },
-    { word: "POMEGRANATE", hint: "Full of tiny jewel-like red seeds inside" },
-    { word: "KIWI",        hint: "Small and brown outside, bright green inside" },
-    { word: "AVOCADO",     hint: "Green and creamy — great on toast!" }
+  "Food & Drink 🍕": [
+    "AVOCADO", "BAGEL", "BANANA", "BLUEBERRY", "BROCCOLI", "BURRITO", "CANTALOUPE", "CARAMEL",
+    "CASHEW", "CAULIFLOWER", "CELERY", "CHEDDAR", "CHEESECAKE", "CHERRY", "CHILI", "CHOCOLATE",
+    "CINNAMON", "CLEMENTINE", "COBBLER", "COCONUT", "COLESLAW", "CORNDOG", "CROISSANT", "CUCUMBER",
+    "CUPCAKE", "DUMPLING", "EDAMAME", "ENCHILADA", "ESPRESSO", "FALAFEL", "FONDUE", "FRITTER",
+    "FUDGE", "GRAPEFRUIT", "GUACAMOLE", "HAMBURGER", "HONEYDEW", "HOTDOG", "HUMMUS", "JALAPENO",
+    "JELLYBEAN", "KETCHUP", "KIWI", "LASAGNA", "LEMONADE", "LENTIL", "LETTUCE", "LOLLIPOP",
+    "MACARONI", "MACAROON", "MANGO", "MARSHMALLOW", "MILKSHAKE", "MOZZARELLA", "MUFFIN", "MUSHROOM",
+    "MUSTARD", "NACHOS", "NOODLE", "OATMEAL", "OMELET", "ORANGE", "PANCAKE", "PAPAYA",
+    "PARMESAN", "PASTA", "PEACH", "PEANUT", "PEAR", "PEPPER", "PICKLE", "PINEAPPLE",
+    "PISTACHIO", "PIZZA", "PLUM", "POMEGRANATE", "POPCORN", "PRETZEL", "PUMPKIN", "QUESADILLA",
+    "RASPBERRY", "RAVIOLI", "SANDWICH", "SMOOTHIE", "SPAGHETTI", "STRAWBERRY", "SUSHI", "TACOS",
+    "TANGERINE", "TIRAMISU", "TOMATO", "TORTILLA", "TRUFFLE", "VANILLA", "WAFFLE", "WATERMELON",
+    "YOGURT"
   ],
-  "Space 🚀": [
-    { word: "ASTEROID",  hint: "A rocky object floating in space" },
-    { word: "GALAXY",    hint: "A huge collection of billions of stars" },
-    { word: "TELESCOPE", hint: "You look through this to see stars up close" },
-    { word: "ASTRONAUT", hint: "A person who travels into space" },
-    { word: "COMET",     hint: "Has a bright tail and zooms past the sun" },
-    { word: "NEPTUNE",   hint: "The farthest planet from the sun" },
-    { word: "SATURN",    hint: "The planet famous for its beautiful rings" },
-    { word: "UNIVERSE",  hint: "Everything that exists — planets, stars, all!" },
-    { word: "SUPERNOVA", hint: "An enormous star explosion in space" },
-    { word: "BLACKHOLE", hint: "So heavy not even light can escape it" }
+  "Sports & Games 🏆": [
+    "ARCHERY", "BADMINTON", "BASEBALL", "BASKETBALL", "BOBSLED", "BOWLING", "BOXING", "CANOEING",
+    "CHEERLEADING", "CRICKET", "CROQUET", "CURLING", "CYCLING", "DECATHLON", "DISCUS", "DIVING",
+    "FENCING", "FOOTBALL", "FRISBEE", "GOLF", "GYMNASTICS", "HANDBALL", "HOCKEY", "HURDLES",
+    "JAVELIN", "JUDO", "KARATE", "KAYAKING", "LACROSSE", "LUGE", "MARATHON", "MOUNTAINEERING",
+    "NETBALL", "PADDLEBOARD", "POLO", "RACQUETBALL", "RODEO", "ROWING", "RUGBY", "SAILING",
+    "SKATEBOARDING", "SKIING", "SKYDIVING", "SNOWBOARDING", "SOCCER", "SOFTBALL", "SQUASH", "SURFING",
+    "SWIMMING", "TAEKWONDO", "TENNIS", "TRIATHLON", "VOLLEYBALL", "WATERPOLO", "WEIGHTLIFTING", "WRESTLING",
+    "CHECKERS", "CHESS", "DOMINOES", "JENGA", "MONOPOLY", "SCRABBLE", "BATTLESHIP"
   ],
-  "Food 🍕": [
-    { word: "SPAGHETTI", hint: "Long thin Italian pasta with sauce" },
-    { word: "CHOCOLATE", hint: "Sweet brown treat made from cacao beans" },
-    { word: "HAMBURGER", hint: "A meat patty in a round bun" },
-    { word: "PANCAKES",  hint: "Flat, fluffy, and great with maple syrup" },
-    { word: "BROCCOLI",  hint: "Looks like a tiny tree and is very healthy" },
-    { word: "POPCORN",   hint: "Corn that pops when it gets hot" },
-    { word: "SANDWICH",  hint: "Filling between two slices of bread" },
-    { word: "MILKSHAKE", hint: "A cold, creamy, blended drink" },
-    { word: "PRETZEL",   hint: "A twisted, salty, crunchy baked snack" },
-    { word: "WAFFLE",    hint: "A square-patterned breakfast treat" }
+  "Science & Space 🚀": [
+    "ASTEROID", "ATMOSPHERE", "ATOM", "AURORA", "BACTERIA", "BLACKHOLE", "CARBON", "CELSIUS",
+    "CHROMOSOME", "COMET", "COMPASS", "CONSTELLATION", "CRATER", "CRYSTAL", "CYCLONE", "DINOSAUR",
+    "EARTHQUAKE", "ECLIPSE", "ELECTRON", "EROSION", "ERUPTION", "EXPERIMENT", "EXTINCT", "FOSSIL",
+    "FRICTION", "GALAXY", "GLACIER", "GRAVITY", "HABITAT", "HURRICANE", "HYDROGEN", "ICEBERG",
+    "LABORATORY", "LAVA", "LIGHTNING", "MAGNET", "MAMMAL", "METEOR", "MICROSCOPE", "MOLECULE",
+    "NEBULA", "NEPTUNE", "NEUTRON", "NITROGEN", "NUCLEUS", "OBSERVATORY", "ORGANISM", "OXYGEN",
+    "OZONE", "PHOTOSYNTHESIS", "PLANET", "PLASMA", "PROTON", "RADIATION", "RAINBOW", "REACTION",
+    "REPTILE", "ROCKET", "SATELLITE", "SATURN", "SPECIMEN", "SUPERNOVA", "TELESCOPE", "TEMPERATURE",
+    "THUNDER", "TORNADO", "TSUNAMI", "UNIVERSE", "URANUS", "VENUS", "VIBRATION", "VOLCANO",
+    "WAVELENGTH", "WEIGHTLESS"
   ],
-  "Sports ⚽": [
-    { word: "BASKETBALL", hint: "Dribble and shoot a ball into a hoop" },
-    { word: "VOLLEYBALL",  hint: "Hit the ball over the net without letting it drop" },
-    { word: "GYMNASTICS",  hint: "Flipping, tumbling, and balancing on beams" },
-    { word: "SWIMMING",    hint: "Racing through water with arms and legs" },
-    { word: "BADMINTON",   hint: "You hit a shuttlecock over a net" },
-    { word: "SKATEBOARD",  hint: "A board on wheels for tricks and riding" },
-    { word: "ARCHERY",     hint: "Shooting arrows at a target" },
-    { word: "CYCLING",     hint: "Racing or riding on two wheels" },
-    { word: "WRESTLING",   hint: "Two people try to pin each other down" },
-    { word: "FENCING",     hint: "Fighting with long thin swords — wear a mask!" }
+  "Places & Geography 🌍": [
+    "AMAZON", "ANTARCTICA", "ARCTIC", "ARIZONA", "ATLANTIC", "AUSTRALIA", "BAHAMAS", "BRAZIL",
+    "CAIRO", "CALIFORNIA", "CANADA", "CARIBBEAN", "CHICAGO", "CHINA", "COLORADO", "CONTINENT",
+    "DENMARK", "DESERT", "EGYPT", "ENGLAND", "EVEREST", "FINLAND", "FLORIDA", "FRANCE",
+    "GERMANY", "GLACIER", "GREENLAND", "HAWAII", "HIMALAYA", "HOLLAND", "ICELAND", "INDIA",
+    "INDONESIA", "IRELAND", "ISRAEL", "ITALY", "JAMAICA", "JAPAN", "JORDAN", "KENYA",
+    "LONDON", "MADAGASCAR", "MALAYSIA", "MANHATTAN", "MEXICO", "MONACO", "MONGOLIA", "MOROCCO",
+    "MOSCOW", "MOUNTAIN", "NILE", "NORWAY", "PACIFIC", "PAKISTAN", "PANAMA", "PENINSULA",
+    "PERU", "PHILIPPINES", "PLATEAU", "PORTUGAL", "PYRAMID", "SAHARA", "SCOTLAND", "SINGAPORE",
+    "SPAIN", "SWEDEN", "SWITZERLAND", "THAILAND", "TIBET", "TOKYO", "TORONTO", "TURKEY",
+    "UKRAINE", "VALLEY", "VIETNAM", "WATERFALL", "ZIMBABWE"
+  ],
+  "Nature & Weather 🌿": [
+    "ACORN", "BAMBOO", "BLOSSOM", "BOULDER", "BRAMBLE", "BROOK", "CANOPY", "CANYON",
+    "CASCADE", "CAVE", "CEDAR", "CLIFF", "CLOVER", "CORAL", "CREEK", "CYPRESS",
+    "DAFFODIL", "DAISY", "DANDELION", "DELTA", "DUNE", "FERN", "FJORD", "FLINT",
+    "FLOWER", "FOREST", "FUNGI", "GRANITE", "GROVE", "HAIL", "HARVEST", "HEATHER",
+    "HORIZON", "IVY", "LAGOON", "LAVENDER", "LEAF", "LICHEN", "LILY", "LIMESTONE",
+    "MAGNOLIA", "MAPLE", "MARSH", "MEADOW", "MOSS", "MUSHROOM", "OCEAN", "ORCHID",
+    "PEBBLE", "PINE", "POLLEN", "POND", "PRAIRIE", "PETAL", "QUARRY", "QUICKSAND",
+    "RAPIDS", "REED", "RIVER", "ROCK", "ROSE", "SANDSTONE", "SEAWEED", "SEEDLING",
+    "SHRUB", "SLEET", "SNOWFLAKE", "SOIL", "SPRING", "STONE", "STREAM", "SUNFLOWER",
+    "SWAMP", "THISTLE", "THUNDER", "TIDE", "TIMBER", "TUNDRA", "TULIP", "VALLEY",
+    "VINE", "VIOLET", "VOLCANO", "WATERFALL", "WETLAND", "WILLOW", "WOODLAND"
+  ],
+  "Vehicles & Transport 🚗": [
+    "AIRCRAFT", "AMBULANCE", "BLIMP", "BULLDOZER", "CAMPER", "CANOE", "CATAMARAN", "CHOPPER",
+    "COMBINE", "CRANE", "CRUISER", "DINGHY", "DRAGSTER", "EXCAVATOR", "FERRY", "FORKLIFT",
+    "FREIGHTER", "GLIDER", "GONDOLA", "HELICOPTER", "HOVERCRAFT", "HYDROFOIL", "ICEBREAKER", "JETSKI",
+    "KAYAK", "LOCOMOTIVE", "MINIBUS", "MINIVAN", "MONORAIL", "MOTORCYCLE", "PARACHUTE", "PICKUP",
+    "PONTOON", "RICKSHAW", "ROCKET", "ROWBOAT", "SCOOTER", "SEAPLANE", "SKATEBOARD", "SLED",
+    "SNOWMOBILE", "SPACESHIP", "SPEEDBOAT", "STAGECOACH", "STEAMSHIP", "SUBMARINE", "SUBWAY", "SUPERTANKER",
+    "TRACTOR", "TRAILER", "TRAM", "TRICYCLE", "TUGBOAT", "UNICYCLE", "WAGON", "WARSHIP",
+    "WHEELCHAIR", "YACHT", "ZEPPELIN"
+  ],
+  "Occupations 👷": [
+    "ACCOUNTANT", "ACTOR", "ACROBAT", "ARCHAEOLOGIST", "ARCHITECT", "ASTRONAUT", "BAKER", "BANKER",
+    "BIOLOGIST", "BLACKSMITH", "BOTANIST", "BUILDER", "BUTCHER", "CARPENTER", "CHEF", "CHEMIST",
+    "COACH", "COMEDIAN", "COMPOSER", "CONTRACTOR", "DENTIST", "DESIGNER", "DETECTIVE", "DIPLOMAT",
+    "DIRECTOR", "DOCTOR", "DRESSMAKER", "ECONOMIST", "EDITOR", "ELECTRICIAN", "ENGINEER", "FARMER",
+    "FIREFIGHTER", "FLORIST", "GEOLOGIST", "HISTORIAN", "ILLUSTRATOR", "INVENTOR", "JOURNALIST", "JUDGE",
+    "LAWYER", "LIBRARIAN", "LIFEGUARD", "LOCKSMITH", "MAGICIAN", "MECHANIC", "MUSICIAN", "NAVIGATOR",
+    "NURSE", "OPTICIAN", "PAINTER", "PHARMACIST", "PHOTOGRAPHER", "PILOT", "PLUMBER", "POET",
+    "PROGRAMMER", "RANGER", "SAILOR", "SCIENTIST", "SCULPTOR", "SOLDIER", "SURGEON", "TEACHER",
+    "TECHNICIAN", "VETERINARIAN", "WELDER", "WRITER", "ZOOLOGIST"
+  ],
+  "Fantasy & Mythology ⚔️": [
+    "CENTAUR", "CHIMERA", "CYCLOPS", "DEMON", "DJINN", "DRAGON", "DWARF", "ELF",
+    "ENCHANTMENT", "FAIRY", "GARGOYLE", "GHOST", "GIANT", "GNOME", "GOBLIN", "GOLEM",
+    "GRIFFIN", "HAUNTED", "HOBBIT", "HYDRA", "KRAKEN", "LEVIATHAN", "MERMAID", "MINOTAUR",
+    "NYMPH", "OGRE", "ORACLE", "PEGASUS", "PHANTOM", "PHOENIX", "PIXIE", "POTION",
+    "QUEST", "SORCERER", "SPECTER", "SPHINX", "SPRITE", "TITAN", "TROLL", "UNICORN",
+    "VALKYRIE", "VAMPIRE", "WARLOCK", "WEREWOLF", "WITCH", "WIZARD", "WRAITH", "ZOMBIE"
+  ],
+  "Music & Arts 🎵": [
+    "ACCORDION", "BALLAD", "BALLET", "BANJO", "BASSOON", "BONGO", "CELLO", "CHORUS",
+    "CLARINET", "CLASSICAL", "COMPOSER", "CONCERTO", "CONDUCTOR", "CYMBAL", "DRUMBEAT", "FLUTE",
+    "FREESTYLE", "GUITAR", "HARMONY", "JAZZ", "KEYBOARD", "LULLABY", "LYRICS", "MANDOLIN",
+    "MELODY", "MICROPHONE", "MUSICAL", "OBOE", "OPERA", "ORCHESTRA", "ORGAN", "PERCUSSION",
+    "PIANO", "PICCOLO", "PLAYLIST", "RHYTHM", "SAXOPHONE", "SERENADE", "SONATA", "SOPRANO",
+    "STRINGS", "SYMPHONY", "TROMBONE", "TRUMPET", "TUBA", "UKULELE", "VIOLIN", "XYLOPHONE",
+    "ZITHER"
+  ],
+  "School & Learning 📚": [
+    "ALGEBRA", "ALPHABET", "ARITHMETIC", "ATLAS", "BIOLOGY", "BOOKSHELF", "CALENDAR", "CHEMISTRY",
+    "CLASSROOM", "COMPASS", "DEBATE", "DICTIONARY", "DIPLOMA", "EQUATION", "ESSAY", "EXPERIMENT",
+    "FRACTION", "GEOGRAPHY", "GEOLOGY", "GEOMETRY", "GRAMMAR", "HISTORY", "HYPOTHESIS", "INVENTION",
+    "LANGUAGE", "LIBRARY", "LITERATURE", "MICROSCOPE", "MULTIPLICATION", "NOTEBOOK", "PARAGRAPH", "PHYSICS",
+    "POETRY", "READING", "RESEARCH", "SCIENCE", "SEMESTER", "SPELLING", "STATISTICS", "SUBTRACT",
+    "SYLLABLE", "TELESCOPE", "THEOREM", "THESAURUS", "TRIGONOMETRY", "TYPEWRITER", "VOCABULARY", "WORKSHEET"
+  ],
+  "Clothing & Fashion 👗": [
+    "BACKPACK", "BATHROBE", "BEANIE", "BLAZER", "BLOUSE", "BOOTS", "BRACELET", "BROOCH",
+    "CARDIGAN", "CHOKER", "CLOAK", "CUFFLINKS", "DRESS", "EARRING", "FEDORA", "GLOVES",
+    "HANDBAG", "HEADBAND", "HELMET", "HOODIE", "JACKET", "JEANS", "JERSEY", "KIMONO",
+    "KNITWEAR", "LEGGINGS", "LOAFERS", "MITTENS", "NECKLACE", "OVERALLS", "PAJAMAS", "PARKA",
+    "PONCHO", "RAINCOAT", "SANDALS", "SCARF", "SKIRT", "SNEAKERS", "SOCKS", "SUNGLASSES",
+    "SUSPENDERS", "SWEATER", "SWIMSUIT", "TIARA", "TRACKSUIT", "TUXEDO", "UMBRELLA", "UNIFORM",
+    "VEST", "WINDBREAKER", "WRISTBAND"
   ]
 };
 
@@ -461,7 +538,7 @@ function buildDeck() {
     var cat  = cats[c];
     var list = WORDS[cat];
     for (var i = 0; i < list.length; i++) {
-      deck.push({ cat: cat, word: list[i].word, hint: list[i].hint });
+      deck.push({ cat: cat, word: list[i] });
     }
   }
   deckTotal = deck.length;
@@ -505,7 +582,7 @@ function newGame() {
   var entry = nextEntry();
 
   currentWord = entry.word;
-  currentHint = entry.hint;
+  currentHint = '';
   guessed     = {};
   wrongCount  = 0;
   hintUsed    = false;
@@ -513,7 +590,7 @@ function newGame() {
 
   document.getElementById('category-badge').textContent = entry.cat;
   document.getElementById('hint-text').textContent      = '';
-  document.getElementById('hint-btn').disabled          = false;
+  document.getElementById('hint-btn').style.display    = 'none';
   document.getElementById('wrong-count').textContent    = '0';
   document.getElementById('wrong-letters').innerHTML    = '';
   document.getElementById('result-overlay').classList.remove('show');
@@ -655,12 +732,7 @@ function endGame(won) {
 }
 
 // ── Hint ──────────────────────────────────────────────────────────────────────
-document.getElementById('hint-btn').addEventListener('click', function() {
-  if (hintUsed || gameOver) return;
-  hintUsed = true;
-  document.getElementById('hint-text').textContent = '💡 ' + currentHint;
-  document.getElementById('hint-btn').disabled = true;
-});
+// hint button hidden — category badge is the clue
 
 // ── Play again ────────────────────────────────────────────────────────────────
 document.getElementById('play-again-btn').addEventListener('click', function() {
