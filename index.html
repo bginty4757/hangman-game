@@ -79,14 +79,16 @@
     /* Word display */
     .word-row {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 0;
+      flex-wrap: nowrap;
       justify-content: center;
+      width: 100%;
+      overflow: visible;
     }
 
     .letter-slot {
-      width: 40px;
-      height: 48px;
+      /* width/height set dynamically in renderWord() */
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -94,10 +96,9 @@
     }
 
     .letter-slot .revealed {
-      font-size: 1.8rem;
+      /* font-size set dynamically in renderWord() */
       font-weight: 800;
       line-height: 1;
-      min-height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -620,13 +621,30 @@ function showBodyPart(index) {
 function renderWord() {
   var row = document.getElementById('word-row');
   row.innerHTML = '';
-  for (var i = 0; i < currentWord.length; i++) {
+  var len = currentWord.length;
+
+  // Scale slot + font so even the longest word fits on one line.
+  // Available width ~= 92vw capped at 540px (max-width of container).
+  // Each slot takes slotW px, plus a gap of ~15% of slotW between slots.
+  var availW = Math.min(window.innerWidth * 0.92, 540);
+  var slotW  = Math.min(40, Math.floor(availW / (len * 1.15)));
+  slotW      = Math.max(18, slotW); // floor at 18px — still readable
+  var gap    = Math.floor(slotW * 0.15);
+  var slotH  = Math.round(slotW * 1.25);
+  var fSize  = Math.round(slotW * 0.95); // letter ≈ 95% of slot width
+
+  for (var i = 0; i < len; i++) {
     var ch = currentWord[i];
     var slot = document.createElement('div');
     slot.className = 'letter-slot';
+    slot.style.width  = slotW + 'px';
+    slot.style.height = slotH + 'px';
+    slot.style.marginLeft = (i === 0 ? 0 : gap) + 'px';
     var span = document.createElement('div');
     span.className = 'revealed';
     span.id = 'slot-' + i;
+    span.style.fontSize  = fSize + 'px';
+    span.style.minHeight = Math.round(fSize * 1.1) + 'px';
     span.textContent = guessed[ch] ? ch : '';
     var line = document.createElement('div');
     line.className = 'underline';
